@@ -1,0 +1,63 @@
+package taskinfocade;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MovieManager {
+    private List<Movie> movies;
+    static final String filePath = "C:\\MovieDta\\data.bin.txt";
+
+    public MovieManager() {
+        movies = new ArrayList<>();
+        loadMovies();
+    }
+
+    public void addMovie(Movie movie) {
+        movies.add(movie);
+        saveMovie();
+    }
+
+    public void clearMovies() {
+        movies.clear();
+        saveMovie();
+    }
+
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
+    public int getMovieId() {
+       
+    	int newId = 1;
+        for (Movie movie : movies) {
+            if (movie.getId() >= newId) {
+                newId = movie.getId() + 1;
+            }
+        }
+        return newId;
+    }
+    
+
+    public void loadMovies() {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filePath))) {
+            movies = (List<Movie>) inputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+    public void saveMovie() {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filePath))) {
+            outputStream.writeObject(movies);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteAllMovies() {
+        movies.clear();
+        saveMovie();
+    }
+}
